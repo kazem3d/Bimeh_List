@@ -5,3 +5,17 @@
 خانه
 
 {% endblock %}
+
+{% block mainContent %}
+
+<h1> صفحه اصلی</h1> 
+<br>
+<br>
+<br>
+<br>
+<a href={% url 'main:workers_list' %} > لیست کارکنان </a>
+<br>
+<br>
+<a href={% url 'main:workhouses_list' %} >  لیست گارگاهها </a>
+
+{% endblock %}

@@ -27,7 +27,8 @@ class WorkHouse(models.Model):
     
 
     def __str__(self):
-        return '{}--{}'.format(self.Name,self.ContractRow)
+        return 'نام کارگاه :{}- کد کارگاه :{} - ردیف پیمان: {}'.format(self.Name,
+                            self.Code,self.ContractRow)
 
 class Workers(models.Model):
 
@@ -64,4 +65,5 @@ class Workers(models.Model):
     Job=models.CharField('شغل',choices=job_choice,max_length=10)
 
     def __str__(self):
-        return ' {}  {} '.format(self.FirstName ,self.LastName)
+        return ' {} {} فرزند:{} شماره بیمه:{} شغل:{} '.format(self.FirstName ,
+                    self.LastName,self.DadName,self.BimehNum,self.Job)

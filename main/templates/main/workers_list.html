@@ -5,3 +5,25 @@
 لیست کارگران
 
 {% endblock %}
+
+
+{% block mainContent %}
+
+{% if workers %}
+
+    {% for worker in workers %}
+        <ul>
+            <li>
+                {{worker}}
+            </li>
+        </ul>
+    {% endfor %}
+
+{% else %}
+
+<h3>
+    هیچ رکوردی وجود ندارد
+</h3>
+{% endif %}
+
+{% endblock %}

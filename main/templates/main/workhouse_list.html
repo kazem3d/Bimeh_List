@@ -1,0 +1,29 @@
+{% extends 'main/_base.html' %}
+
+{% block title %}
+
+لیست کارگاه ها
+
+{% endblock %}
+
+
+{% block mainContent %}
+
+{% if workhouses %}
+
+    {% for workhouse in workhouses %}
+        <ul>
+            <li>
+                {{workhouse}}
+            </li>
+        </ul>
+    {% endfor %}
+
+{% else %}
+
+<h3>
+    هیچ رکوردی وجود ندارد
+</h3>
+{% endif %}
+
+{% endblock %}
