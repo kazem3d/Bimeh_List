@@ -32,6 +32,11 @@ class WorkHouse(models.Model):
 
 class Workers(models.Model):
 
+    class Meta:
+
+        verbose_name='کارکنان'
+        verbose_name_plural='کارکنان'
+
     BimehNum=models.CharField('شماره بیمه',max_length=10,
                             validators=[RegexValidator(r'^\d{1,10}$',
                             message='فقط عدد وارد شود')])
@@ -67,3 +72,41 @@ class Workers(models.Model):
     def __str__(self):
         return ' {} {} فرزند:{} شماره بیمه:{} شغل:{} '.format(self.FirstName ,
                     self.LastName,self.DadName,self.BimehNum,self.Job)
+
+
+class MonthList(models.Model):
+
+    class Meta:
+
+        verbose_name='لیست ماهانه'
+        verbose_name_plural='لیست ماهانه'
+
+    
+    workhouse=models.ForeignKey('WorkHouse',on_delete=models.CASCADE,verbose_name='کارگاه ')
+    year=models.CharField('سال',max_length=2,null=True,
+                                validators=[RegexValidator(r'^\d{1,10}$',
+                                message='فقط عدد وارد شود')])
+    month=models.CharField('ماه',max_length=2,null=True,
+                                validators=[RegexValidator(r'^\d{1,10}$',
+                                message='فقط عدد وارد شود')])
+
+    def __str__(self):
+        return 'لیست سال : {}  ماه :{} '.format(self.year,self.month)
+
+class DetailsList(models.Model):
+
+    
+    class Meta:
+
+        verbose_name=' جزئیات لیست '
+        verbose_name_plural=' جزئیات لیست '
+
+    month_list=models.ForeignKey('MonthList',on_delete=models.CASCADE,verbose_name='لیست ماهانه')
+    worker=models.ForeignKey('Workers',on_delete=models.CASCADE,verbose_name=' نام کارگر')
+    working_days=models.SmallIntegerField('تعداد روز کارکرد')
+    daily_wage=models.BigIntegerField('دستمزد روزانه')
+    advantage=models.BigIntegerField('مزایای ماهانه')
+
+    def __str__(self):
+        return '{} {} {} '.format(self.worker.FirstName,self.worker.LastName,self.month_list)
+
