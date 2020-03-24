@@ -1,0 +1,34 @@
+{% extends 'main/_base.html' %}
+
+{% block title %}
+
+لیست ماهانه
+
+{% endblock %}
+
+{% block mainContent %}
+<br>
+<a href='http://127.0.0.1:8000/admin/main/monthlist/add/' >  ثبت لیست ماهانه جدید </a>
+<br>
+
+
+{% if months_list %}
+
+    {% for month_list in months_list %}
+        <ul> 
+            <a href='#' >
+            <li>
+                {{month_list}}
+            </li>
+            </a>
+        </ul>
+    {% endfor %}
+
+{% else %}
+
+<h3>
+    هیچ رکوردی وجود ندارد
+</h3>
+{% endif %}
+
+{% endblock %}
