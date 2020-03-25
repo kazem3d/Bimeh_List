@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from main.models import WorkHouse,Workers,DetailsList,MonthList
 
 def home(request):
@@ -36,3 +36,16 @@ def month_list(request):
     }
     
     return render(request,'main/month_list.html',context)
+
+def details_list(request,list_id):
+
+    # records=get_object_or_404(DetailsList,pk=list_id) 
+    records= DetailsList.objects.filter(month_list__pk=list_id)
+
+    context={
+
+        'records': records
+
+    }    
+
+    return render (request,'main/details_list.html',context)

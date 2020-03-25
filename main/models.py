@@ -91,7 +91,7 @@ class MonthList(models.Model):
                                 message='فقط عدد وارد شود')])
 
     def __str__(self):
-        return 'لیست سال : {}  ماه :{} '.format(self.year,self.month)
+        return 'کارگاه : {}  لیست سال : {}  ماه :{} '.format(self.workhouse.Name,self.year,self.month)
 
 class DetailsList(models.Model):
 
@@ -109,4 +109,3 @@ class DetailsList(models.Model):
 
     def __str__(self):
         return '{} {} {} '.format(self.worker.FirstName,self.worker.LastName,self.month_list)
-

@@ -1,0 +1,40 @@
+{% extends 'main/_base.html' %}
+
+{% block title %}
+
+جزئیات لیست
+
+{% endblock %}
+
+{% block mainContent %}
+
+
+<h3>ریز کارکرد</h3>
+<br>
+<a href='http://127.0.0.1:8000/admin/main/detailslist/add/' >  ثبت  جدید </a>
+<br>
+
+<a href='#' >  دریافت فایل خروجی </a>
+
+{% if records %}
+
+    {% for record in records %}
+        <ul> 
+            <a href='#' >
+            <li>
+                {{record}}
+            </li>
+            </a>
+        </ul>
+    {% endfor %}
+
+{% else %}
+
+<h3>
+    هیچ رکوردی وجود ندارد
+</h3>
+{% endif %}
+
+
+
+{% endblock %}

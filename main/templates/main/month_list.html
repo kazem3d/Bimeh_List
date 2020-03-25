@@ -7,8 +7,10 @@
 {% endblock %}
 
 {% block mainContent %}
+
+<h3>لیست های بیمه</h3>
 <br>
-<a href='http://127.0.0.1:8000/admin/main/monthlist/add/' >  ثبت لیست ماهانه جدید </a>
+<a href='http://127.0.0.1:8000/admin/main/monthlist/add/' >  ثبت لیست جدید </a>
 <br>
 
 
@@ -16,7 +18,7 @@
 
     {% for month_list in months_list %}
         <ul> 
-            <a href='#' >
+            <a href={% url 'main:details_list' list_id=month_list.id %} >
             <li>
                 {{month_list}}
             </li>
