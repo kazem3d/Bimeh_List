@@ -54,16 +54,37 @@ def details_list(request,list_id):
 
 
 
-def export_csv(request):
+def export_workhouse_data(request):
+
+    #this section for .csv files
+
     response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;  filename="kar_list.txt"'
 
-    response['Content-Disposition'] = 'attachment;  filename="users.csv"'
-
-    # writer2=open('test.txt','w')
     writer = csv.writer(response)
-    writer.writerow(['Username'])
-    users = WorkHouse.objects.all().values_list('Code')
+    # writer.writerow(['header names list'])
+    mon_list = MonthList.objects.all().values_list()
     
-    for user in users:
-        writer.writerow(user)    
+    writer.writerow(mon_list)    
+    return response
+
+
+    #this section is for .txt files
+
+    # text_file_content='salam'
+    # response = HttpResponse(text_content ,content_type='text/plain')
+    # return response
+
+def export_workers_data(request):
+
+    #this section for .csv files
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;  filename="work_list.txt"'
+
+    writer = csv.writer(response)
+    # writer.writerow(['header names list'])
+    workers_list = DetailsList.objects.all().values_list()
+    for worker in workers_list:
+        writer.writerow(worker)    
     return response

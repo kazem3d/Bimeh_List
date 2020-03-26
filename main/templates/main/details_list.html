@@ -13,8 +13,10 @@
 <br>
 <a href='http://127.0.0.1:8000/admin/main/detailslist/add/' >  ثبت  جدید </a>
 <br>
-
-<a href='#' >  دریافت فایل خروجی </a>
+<a href={% url 'main:export_workhouse_data' %} >  دریافت اطلاعات  کارگاه </a>
+<br>
+<a href={% url 'main:export_workers_data' %} >  دریافت اطلاعات بیمه شدگان </a>
+<br>
 
 {% if records %}
 

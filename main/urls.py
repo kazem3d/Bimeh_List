@@ -8,6 +8,6 @@ urlpatterns=[
     path('workhouses_list/',views.workhouses_list,name="workhouses_list"),
     path('month_list/',views.month_list,name="month_list"),
     path('details_list/<int:list_id>',views.details_list,name="details_list"),
-    path('export/',views.export_csv, name='export_csv'),
-
+    path('export_kar/',views.export_workhouse_data, name='export_workhouse_data'),
+    path('export_worker/',views.export_workers_data, name='export_workers_data'),
 ]
