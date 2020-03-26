@@ -1,5 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from main.models import WorkHouse,Workers,DetailsList,MonthList
+import csv
+from django.http import HttpResponse
 
 def home(request):
     return render(request,"main/home.html")
@@ -49,3 +51,19 @@ def details_list(request,list_id):
     }    
 
     return render (request,'main/details_list.html',context)
+
+
+
+def export_csv(request):
+    response = HttpResponse(content_type='text/csv')
+
+    response['Content-Disposition'] = 'attachment;  filename="users.csv"'
+
+    # writer2=open('test.txt','w')
+    writer = csv.writer(response)
+    writer.writerow(['Username'])
+    users = WorkHouse.objects.all().values_list('Code')
+    
+    for user in users:
+        writer.writerow(user)    
+    return response
