@@ -62,8 +62,11 @@ def export_workhouse_data(request):
     response['Content-Disposition'] = 'attachment;  filename="kar_list.txt"'
 
     writer = csv.writer(response)
-    # writer.writerow(['header names list'])
-    mon_list = MonthList.objects.all().values_list()
+    writer.writerow(['header names list'])
+    # users = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
+    mon_list = MonthList.objects.all().values_list('workhouse__Code','workhouse__Name','workhouse__Address',
+                'year','month',
+                    )
     
     writer.writerow(mon_list)    
     return response
