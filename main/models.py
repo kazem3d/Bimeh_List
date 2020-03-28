@@ -2,6 +2,19 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from main.choices import *
+from django.db.models import F,BigIntegerField,ExpressionWrapper
+
+
+class AnnotationManager(models.Manager):
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.annotations = kwargs
+
+    def get_queryset(self):
+        return super().get_queryset().annotate(**self.annotations)
+
+
 
 class WorkHouse(models.Model):
 
@@ -106,6 +119,16 @@ class DetailsList(models.Model):
     working_days=models.SmallIntegerField('تعداد روز کارکرد')
     daily_wage=models.BigIntegerField('دستمزد روزانه')
     advantage=models.BigIntegerField('مزایای ماهانه')
+
+    _monthly_wage=None
+
+    objects = AnnotationManager(
+
+        
+        monthly_wage=ExpressionWrapper(F('working_days') * F('daily_wage') , output_field=BigIntegerField())
+        
+
+    )
 
     def __str__(self):
         return '{} {} {} '.format(self.worker.FirstName,self.worker.LastName,self.month_list)

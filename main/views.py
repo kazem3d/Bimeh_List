@@ -2,6 +2,8 @@ from django.shortcuts import render,get_object_or_404
 from main.models import WorkHouse,Workers,DetailsList,MonthList
 import csv
 from django.http import HttpResponse
+from django.db.models import Count,Sum
+from django.db.models import F,BigIntegerField,ExpressionWrapper
 
 def home(request):
     return render(request,"main/home.html")
@@ -62,12 +64,28 @@ def export_workhouse_data(request):
     response['Content-Disposition'] = 'attachment;  filename="kar_list.txt"'
 
     writer = csv.writer(response)
-    writer.writerow(['header names list'])
+    writer.writerow(['workhouse__Code','workhouse__Name','workhouse__Address',
+                'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
+                'monthly_wage_and_advantage',])
     # users = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
-    mon_list = MonthList.objects.all().values_list('workhouse__Code','workhouse__Name','workhouse__Address',
-                'year','month',
-                    )
+    mon_list = MonthList.objects.all()
+    mon_list=mon_list.annotate(worker_num=Count('detailslist'))
+    mon_list=mon_list.annotate(days_sum=Sum('detailslist__working_days'))
+    mon_list=mon_list.annotate(daily_wage_sum=Sum('detailslist__daily_wage'))
+    mon_list=mon_list.annotate(monthly_wage_sum=Sum(ExpressionWrapper(F('detailslist__working_days') * F('detailslist__daily_wage') , output_field=BigIntegerField())))
+    mon_list=mon_list.annotate(monthly_advantage=Sum('detailslist__advantage'))  
     
+    mon_list=mon_list.annotate(monthly_wage_and_advantage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
+    mon_list=mon_list.annotate(total_wage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
+    mon_list=mon_list.annotate(bime=F('total_wage')*2)
+
+ 
+    mon_list=mon_list.values_list('workhouse__Code','workhouse__Name','workhouse__Address',
+                'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
+                'monthly_wage_and_advantage','total_wage','workhouse__Ratio','bime'
+                    )
+    # print('@@@@@@@@@@@@@@@')
+    # print(type(mon_list),mon_list)
     writer.writerow(mon_list)    
     return response
 
