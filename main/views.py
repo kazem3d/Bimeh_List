@@ -98,7 +98,7 @@ def export_workhouse_data(request):
     # response = HttpResponse(text_content ,content_type='text/plain')
     # return response
 
-def export_workers_data(request):
+def export_workers_data(request): 
 
     #this section for .csv files
 
@@ -110,10 +110,24 @@ def export_workers_data(request):
     workers_list=DetailsList.objects.all()
 
 
+    workers_list=workers_list.annotate(monthly_wage=(ExpressionWrapper(F('working_days') * F('daily_wage') , output_field=BigIntegerField())))
+    workers_list=workers_list.annotate(monthly_wage_and_advantage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
+    workers_list=workers_list.annotate(total_wage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
+    workers_list=workers_list.annotate(insured_share=ExpressionWrapper((F('total_wage')*(30-F('month_list__workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
+    # mon_list=mon_list.annotate(unemployment_premium=ExpressionWrapper(F('total_wage')*0.04,output_field=BigIntegerField()  ))
 
 
+    workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
+                        'month_list__month','worker__BimehNum','worker__FirstName','worker__LastName',
+                        'worker__DadName','worker__IdNum','worker__IdPlace','worker__RegisterDate',
+                        'worker__BirthDate','worker__Sex','worker__Nationality','worker__Job',
+                        'start_date','end_date','working_days','daily_wage','monthly_wage',
+                        'advantage','monthly_wage_and_advantage','total_wage','insured_share',
+                        'worker__Job','worker__NationNum')
 
-    workers = DetailsList.objects.all().values_list('worker__IdPlace')
+    #TODO:advantage is daily or note
+    #TODO : diffrence between monthly_wage_and_advantage and total_wage
+
     for worker in workers:
         writer.writerow(worker)    
     return response
