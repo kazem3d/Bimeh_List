@@ -76,6 +76,12 @@ class Workers(models.Model):
 
     BirthPlace=models.CharField('محل تولد ',choices=city_choice,max_length=10)
 
+    RegisterDate=models.CharField('تاریخ صدور ',max_length=8,validators=[RegexValidator(r'^\d{1,10}$')])
+
+    BirthDate=models.CharField('تاریخ تولد ',max_length=8,validators=[RegexValidator(r'^\d{1,10}$')])
+
+
+
     Sex=models.CharField('جنسیت ',choices=sex_choice,max_length=10)
 
     Nationality=models.CharField('ملیت ',choices=nat_choice,max_length=10)
@@ -119,6 +125,10 @@ class DetailsList(models.Model):
     working_days=models.SmallIntegerField('تعداد روز کارکرد')
     daily_wage=models.BigIntegerField('دستمزد روزانه')
     advantage=models.BigIntegerField('مزایای ماهانه')
+    start_date=models.CharField('تاریخ شروع به کار ',max_length=8 ,validators=[RegexValidator(r'^\d{1,10}$')])
+    end_date=models.CharField('تاریخ پایان به کار ',max_length=8,validators=[RegexValidator(r'^\d{1,10}$')])
+
+
 
     _monthly_wage=None
 

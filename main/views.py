@@ -3,7 +3,7 @@ from main.models import WorkHouse,Workers,DetailsList,MonthList
 import csv
 from django.http import HttpResponse
 from django.db.models import Count,Sum
-from django.db.models import F,BigIntegerField,ExpressionWrapper
+from django.db.models import F,BigIntegerField,ExpressionWrapper,FloatField
 
 def home(request):
     return render(request,"main/home.html")
@@ -77,16 +77,18 @@ def export_workhouse_data(request):
     
     mon_list=mon_list.annotate(monthly_wage_and_advantage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
     mon_list=mon_list.annotate(total_wage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
-    mon_list=mon_list.annotate(bime=F('total_wage')*2)
-
- 
-    mon_list=mon_list.values_list('workhouse__Code','workhouse__Name','workhouse__Address',
+    mon_list=mon_list.annotate(employer_share=ExpressionWrapper(F('total_wage')*F('workhouse__Ratio')/100,output_field=BigIntegerField()  ))
+    mon_list=mon_list.annotate(insured_share=ExpressionWrapper((F('total_wage')*(30-F('workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
+    mon_list=mon_list.annotate(unemployment_premium=ExpressionWrapper(F('total_wage')*0.04,output_field=BigIntegerField()  ))
+    # mon_list=mon_list.annotate(porsantaj=ExpressionWrapper(F('0'),output_field=BigIntegerField()))
+    
+    mon=mon_list.values_list('workhouse__Code','workhouse__Name','workhouse__Address',
                 'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
-                'monthly_wage_and_advantage','total_wage','workhouse__Ratio','bime'
-                    )
+                'monthly_wage_and_advantage','total_wage','insured_share','employer_share','unemployment_premium',
+                'workhouse__Ratio',  )
     # print('@@@@@@@@@@@@@@@')
     # print(type(mon_list),mon_list)
-    writer.writerow(mon_list)    
+    writer.writerow(mon)    
     return response
 
 
@@ -105,7 +107,13 @@ def export_workers_data(request):
 
     writer = csv.writer(response)
     # writer.writerow(['header names list'])
-    workers_list = DetailsList.objects.all().values_list()
-    for worker in workers_list:
+    workers_list=DetailsList.objects.all()
+
+
+
+
+
+    workers = DetailsList.objects.all().values_list('worker__IdPlace')
+    for worker in workers:
         writer.writerow(worker)    
     return response
