@@ -4,6 +4,7 @@ import csv
 from django.http import HttpResponse
 from django.db.models import Count,Sum
 from django.db.models import F,BigIntegerField,ExpressionWrapper,FloatField
+from main.choices import city_choice
 
 def home(request):
     return render(request,"main/home.html")
@@ -114,8 +115,6 @@ def export_workers_data(request):
     workers_list=workers_list.annotate(monthly_wage_and_advantage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
     workers_list=workers_list.annotate(total_wage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
     workers_list=workers_list.annotate(insured_share=ExpressionWrapper((F('total_wage')*(30-F('month_list__workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
-    # mon_list=mon_list.annotate(unemployment_premium=ExpressionWrapper(F('total_wage')*0.04,output_field=BigIntegerField()  ))
-
 
     workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
                         'month_list__month','worker__BimehNum','worker__FirstName','worker__LastName',
@@ -131,3 +130,82 @@ def export_workers_data(request):
     for worker in workers:
         writer.writerow(worker)    
     return response
+
+def import_workhouses_data(request):
+    
+    # importing csv module 
+    import csv 
+
+    # csv file name 
+    filename = "workhouse.csv"
+
+    # initializing the titles and rows list 
+    # fields = [] 
+    rows = [] 
+
+    # reading csv file 
+    with open(filename, 'r') as csvfile: 
+        # creating a csv reader object 
+        csvreader = csv.reader(csvfile) 
+        
+        # extracting field names through first row 
+        # fields = csvreader.next() 
+
+        # extracting each data row one by one 
+        for row in csvreader: 
+            rows.append(row) 
+            obj=WorkHouse(Code=row[1],ContractRow=row[2],Name=row[3],Client=row[4],Address=row[5],Ratio=row[6])
+            obj.save()
+    
+    return HttpResponse('done')
+
+
+def import_workers_data(request):
+
+    # importing csv module 
+    import csv 
+
+    # csv file name 
+    filename = "workers.csv"
+
+    # initializing the titles and rows list 
+    # fields = [] 
+    rows = [] 
+
+    # reading csv file 
+    with open(filename, 'r') as csvfile: 
+        # creating a csv reader object 
+        csvreader = csv.reader(csvfile) 
+        
+        # extracting field names through first row 
+        # fields = csvreader.next() 
+
+        # extracting each data row one by one 
+    
+        for row in  csvreader:
+
+            #covreting city_name to city_code
+            c=[x for x, y in city_choice if y == row[8]]
+            if c != []:
+                row[8]=c[0]
+                row[9]=c[0]
+                
+            row[10]=row[10].split('/')
+            row[10]=''.join(row[10])
+
+            row[11]=row[11].split('/')
+            row[11]=''.join(row[11])
+            
+
+            
+
+            rows.append(row) 
+
+            obj=Workers(BimehNum=row[1],PersoneliNum=row[2],LastName=row[3],FirstName=row[4],DadName=row[5],NationNum=row[6],
+                        IdNum=row[7],IdPlace=row[8],BirthPlace=row[9],BirthDate=row[10],RegisterDate=row[11],Sex=row[12],
+                        Nationality=row[15],Job=row[21],)
+            obj.save()
+
+        #TODO IdPlace=,BirthPlace=, most some consultations and BirthDate=,RegisterDate=
+
+    return HttpResponse('done')

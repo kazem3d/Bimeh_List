@@ -10,4 +10,6 @@ urlpatterns=[
     path('details_list/<int:list_id>',views.details_list,name="details_list"),
     path('export_kar/',views.export_workhouse_data, name='export_workhouse_data'),
     path('export_worker/',views.export_workers_data, name='export_workers_data'),
+    path('import_workhouses/',views.import_workhouses_data, name='import_workhouses_data'),
+    path('import_workers/',views.import_workers_data, name='import_workers_data'),
 ]

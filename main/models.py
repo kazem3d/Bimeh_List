@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from main.choices import *
 from django.db.models import F,BigIntegerField,ExpressionWrapper
+from django.utils.translation import gettext_lazy as _
 
 
 class AnnotationManager(models.Manager):
@@ -49,6 +50,8 @@ class Workers(models.Model):
 
         verbose_name='کارکنان'
         verbose_name_plural='کارکنان'
+
+
 
     BimehNum=models.CharField('شماره بیمه',max_length=10,
                             validators=[RegexValidator(r'^\d{1,10}$',
