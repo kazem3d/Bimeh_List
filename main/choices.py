@@ -21,6 +21,8 @@ rows=curser.fetchall()
 for row in rows:
     city_choice+=(row,)
 
+
+
 field=()
 curser.execute('SELECT code,name FROM field')
 rows=curser.fetchall()

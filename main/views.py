@@ -185,10 +185,10 @@ def import_workers_data(request):
         for row in  csvreader:
 
             #covreting city_name to city_code
-            c=[x for x, y in city_choice if y == row[8]]
-            if c != []:
-                row[8]=c[0]
-                row[9]=c[0]
+            # c=[x for x, y in city_choice if y == row[8]]
+            # if c != []:
+            #     row[8]=c[0]
+            #     row[9]=c[0]
                 
             row[10]=row[10].split('/')
             row[10]=''.join(row[10])
@@ -200,9 +200,11 @@ def import_workers_data(request):
             
 
             rows.append(row) 
-
+            print('$$$$$$')
+            print(row[8])
+            print(Workers.city_chioce_dict[row[8]])
             obj=Workers(BimehNum=row[1],PersoneliNum=row[2],LastName=row[3],FirstName=row[4],DadName=row[5],NationNum=row[6],
-                        IdNum=row[7],IdPlace=row[8],BirthPlace=row[9],BirthDate=row[10],RegisterDate=row[11],Sex=row[12],
+                        IdNum=row[7],IdPlace=Workers.city_chioce_dict[row[8]],BirthPlace=Workers.city_chioce_dict[row[9]],BirthDate=row[10],RegisterDate=row[11],Sex=row[12],
                         Nationality=row[15],Job=row[21],)
             obj.save()
 
