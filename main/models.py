@@ -52,7 +52,7 @@ class Workers(models.Model):
         verbose_name_plural='کارکنان'
 
 
-    city_chioce_dict={city:value for value,city in city_choice}
+    # city_chioce_dict={city:value for value,city in city_choice}
 
     BimehNum=models.CharField('شماره بیمه',max_length=10,
                             validators=[RegexValidator(r'^\d{1,10}$',
