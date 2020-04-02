@@ -41,16 +41,11 @@ rows=curser.fetchall()
 for row in rows:
     country+=(row,)
 
-job_choice=(
-    ('024032','کارگرساده'),
-    ('2','مهندس')
-
-)
-# curser.execute('SELECT code,name FROM job')
-# rows=curser.fetchall()
-# for row in rows:
-#     job_choice+=(row,)
+job_choice=()
+curser.execute('SELECT code,name FROM job_slim')
+rows=curser.fetchall()
+for row in rows:
+    job_choice+=(row,)
 
 
-# print (job)
-    
+
