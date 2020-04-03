@@ -3,7 +3,7 @@ from main.models import WorkHouse,Workers,DetailsList,MonthList
 import csv
 from django.http import HttpResponse
 from django.db.models import Count,Sum
-from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField
+from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField,Value
 from main.choices import city_choice
 
 def home(request):
@@ -129,9 +129,13 @@ def export_workers_data(request):
     workers_list=workers_list.annotate(insured_share=ExpressionWrapper(F('total_wage')*.07,output_field=BigIntegerField()  ))
     workers_list=workers_list.extra(select = {'porsantaj_ratio': 0})
     workers_list=workers_list.extra(select = {'list_number': 0})
+    # sex_chioce_dict={'1':'men','2':'women'}
+   
+    # workers_list=workers_list.annotate(jensiat=F('worker__Sex').get_Sex_display())
+    # workers_list=workers_list.filter(worker__Sex = '1').annotate(sex=Value('men', CharField()))
     
-
-
+    # .get_Sex_display()
+   
     workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
                         'month_list__month','list_number','worker__BimehNum','worker__FirstName','worker__LastName',
                         'worker__DadName','worker__IdNum','worker__IdPlace','worker__RegisterDate',
@@ -144,6 +148,7 @@ def export_workers_data(request):
     #TODO : diffrence between monthly_wage_and_advantage and total_wage
 
     for worker in workers:
+        worker
         writer.writerow(worker)    
     return response
 
