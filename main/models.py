@@ -112,6 +112,13 @@ class MonthList(models.Model):
     month=models.CharField('ماه',max_length=2,null=True,
                                 validators=[RegexValidator(r'^\d{1,10}$',
                                 message='فقط عدد وارد شود')])
+    
+    # models.constants
+    # list_type=0
+    # list_number=0
+    # list_description=''
+    # porsantaj_ratio=0
+    # hard_ratio=0
 
     def __str__(self):
         return 'کارگاه : {}  لیست سال : {}  ماه :{} '.format(self.workhouse.Name,self.year,self.month)

@@ -3,7 +3,7 @@ from main.models import WorkHouse,Workers,DetailsList,MonthList
 import csv
 from django.http import HttpResponse
 from django.db.models import Count,Sum
-from django.db.models import F,BigIntegerField,ExpressionWrapper,FloatField
+from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField
 from main.choices import city_choice
 
 def home(request):
@@ -78,15 +78,27 @@ def export_workhouse_data(request):
     
     mon_list=mon_list.annotate(monthly_wage_and_advantage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
     mon_list=mon_list.annotate(total_wage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
-    mon_list=mon_list.annotate(employer_share=ExpressionWrapper(F('total_wage')*F('workhouse__Ratio')/100,output_field=BigIntegerField()  ))
-    mon_list=mon_list.annotate(insured_share=ExpressionWrapper((F('total_wage')*(30-F('workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
-    mon_list=mon_list.annotate(unemployment_premium=ExpressionWrapper(F('total_wage')*0.04,output_field=BigIntegerField()  ))
-    # mon_list=mon_list.annotate(porsantaj=ExpressionWrapper(F('0'),output_field=BigIntegerField()))
+    # mon_list=mon_list.annotate(employer_share_sum=ExpressionWrapper(F('total_wage')*F('workhouse__Ratio')/100,output_field=BigIntegerField()  ))
+    # mon_list=mon_list.annotate(insured_share_sum=ExpressionWrapper((F('total_wage')*(30-F('workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
+    mon_list=mon_list.annotate(employer_share_sum=ExpressionWrapper(F('total_wage')*0.2,output_field=BigIntegerField()  ))
+    mon_list=mon_list.annotate(insured_share_sum=ExpressionWrapper(F('total_wage')*0.07,output_field=BigIntegerField()  ))
+    mon_list=mon_list.annotate(unemployment_premium_sum=ExpressionWrapper(F('total_wage')*0.03,output_field=BigIntegerField()  ))
+    mon_list=mon_list.extra(select = {'list_number': 0})
+    mon_list=mon_list.extra(select = {'list_type': 0})
+    mon_list=mon_list.extra(select = {'list_description': ''})
+    mon_list=mon_list.extra(select = {'porsantaj_ratio': 0})
+    mon_list=mon_list.extra(select = {'hard_ratio': 0})
+
+
+
+
     
-    mon=mon_list.values_list('workhouse__Code','workhouse__Name','workhouse__Address',
-                'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
-                'monthly_wage_and_advantage','total_wage','insured_share','employer_share','unemployment_premium',
-                'workhouse__Ratio',  )
+    
+    
+    mon=mon_list.values_list('workhouse__Code','workhouse__Name','workhouse__Client','workhouse__Address','list_type',
+                'year','month','list_number','list_description','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
+                'monthly_wage_and_advantage','total_wage','insured_share_sum','employer_share_sum','unemployment_premium_sum',
+                'workhouse__Ratio','porsantaj_ratio','hard_ratio','workhouse__ContractRow'  )
     # print('@@@@@@@@@@@@@@@')
     # print(type(mon_list),mon_list)
     writer.writerow(mon)    
@@ -114,15 +126,19 @@ def export_workers_data(request):
     workers_list=workers_list.annotate(monthly_wage=(ExpressionWrapper(F('working_days') * F('daily_wage') , output_field=BigIntegerField())))
     workers_list=workers_list.annotate(monthly_wage_and_advantage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
     workers_list=workers_list.annotate(total_wage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
-    workers_list=workers_list.annotate(insured_share=ExpressionWrapper((F('total_wage')*(30-F('month_list__workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
+    workers_list=workers_list.annotate(insured_share=ExpressionWrapper(F('total_wage')*.07,output_field=BigIntegerField()  ))
+    workers_list=workers_list.extra(select = {'porsantaj_ratio': 0})
+    workers_list=workers_list.extra(select = {'list_number': 0})
+    
+
 
     workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
-                        'month_list__month','worker__BimehNum','worker__FirstName','worker__LastName',
+                        'month_list__month','list_number','worker__BimehNum','worker__FirstName','worker__LastName',
                         'worker__DadName','worker__IdNum','worker__IdPlace','worker__RegisterDate',
                         'worker__BirthDate','worker__Sex','worker__Nationality','worker__Job',
                         'start_date','end_date','working_days','daily_wage','monthly_wage',
-                        'advantage','monthly_wage_and_advantage','total_wage','insured_share',
-                        'worker__Job','worker__NationNum')
+                        'advantage','monthly_wage_and_advantage','total_wage','insured_share','porsantaj_ratio',
+                        'worker__Job','worker__NationNum',)
 
     #TODO:advantage is daily or note
     #TODO : diffrence between monthly_wage_and_advantage and total_wage
