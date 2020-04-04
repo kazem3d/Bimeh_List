@@ -4,7 +4,7 @@ import csv
 from django.http import HttpResponse
 from django.db.models import Count,Sum
 from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField,Value
-from main.choices import city_choice
+from main.choices import city_choice,job_choice
 
 def home(request):
     return render(request,"main/home.html")
@@ -65,51 +65,49 @@ def export_workhouse_data(request):
     response['Content-Disposition'] = 'attachment;  filename="kar_list.txt"'
 
     writer = csv.writer(response)
-    writer.writerow(['workhouse__Code','workhouse__Name','workhouse__Address',
-                'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
-                'monthly_wage_and_advantage',])
+    # writer.writerow(['workhouse__Code','workhouse__Name','workhouse__Address',
+    #             'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
+    #             'monthly_wage_and_advantage',])
     # users = User.objects.all().values_list('username', 'first_name', 'last_name', 'email')
-    mon_list = MonthList.objects.all()
+    
+    mon_list =MonthList.objects.all()
+
     mon_list=mon_list.annotate(worker_num=Count('detailslist'))
     mon_list=mon_list.annotate(days_sum=Sum('detailslist__working_days'))
     mon_list=mon_list.annotate(daily_wage_sum=Sum('detailslist__daily_wage'))
     mon_list=mon_list.annotate(monthly_wage_sum=Sum(ExpressionWrapper(F('detailslist__working_days') * F('detailslist__daily_wage') , output_field=BigIntegerField())))
     mon_list=mon_list.annotate(monthly_advantage=Sum('detailslist__advantage'))  
-    
+
     mon_list=mon_list.annotate(monthly_wage_and_advantage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
     mon_list=mon_list.annotate(total_wage=Sum(ExpressionWrapper( F('detailslist__advantage') + (F('detailslist__daily_wage') * F('detailslist__working_days')), output_field=BigIntegerField()) )) 
-    # mon_list=mon_list.annotate(employer_share_sum=ExpressionWrapper(F('total_wage')*F('workhouse__Ratio')/100,output_field=BigIntegerField()  ))
-    # mon_list=mon_list.annotate(insured_share_sum=ExpressionWrapper((F('total_wage')*(30-F('workhouse__Ratio'))/100),output_field=BigIntegerField()  ))
+
     mon_list=mon_list.annotate(employer_share_sum=ExpressionWrapper(F('total_wage')*0.2,output_field=BigIntegerField()  ))
     mon_list=mon_list.annotate(insured_share_sum=ExpressionWrapper(F('total_wage')*0.07,output_field=BigIntegerField()  ))
     mon_list=mon_list.annotate(unemployment_premium_sum=ExpressionWrapper(F('total_wage')*0.03,output_field=BigIntegerField()  ))
-    mon_list=mon_list.extra(select = {'list_number': 0})
-    mon_list=mon_list.extra(select = {'list_type': 0})
-    mon_list=mon_list.extra(select = {'list_description': ''})
-    mon_list=mon_list.extra(select = {'porsantaj_ratio': 0})
-    mon_list=mon_list.extra(select = {'hard_ratio': 0})
+    mon_list=mon_list.annotate(list_number=Value('0', CharField()))
+    mon_list=mon_list.annotate(list_type=Value('0', CharField()))
+    mon_list=mon_list.annotate(list_description=Value('', CharField()))
+    mon_list=mon_list.annotate(porsantaj_ratio=Value('0', CharField()))
+    mon_list=mon_list.annotate(hard_ratio=Value('0', CharField()))
 
 
+    # mon_list=mon_list.extra(select = {'list_number': 0})
+    # mon_list=mon_list.extra(select = {'list_type': 0})
+    # mon_list=mon_list.extra(select = {'list_description': ''})
+    # mon_list=mon_list.extra(select = {'porsantaj_ratio': 0})
+    # mon_list=mon_list.extra(select = {'hard_ratio': 0})
 
-
-    
-    
     
     mon=mon_list.values_list('workhouse__Code','workhouse__Name','workhouse__Client','workhouse__Address','list_type',
                 'year','month','list_number','list_description','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
                 'monthly_wage_and_advantage','total_wage','insured_share_sum','employer_share_sum','unemployment_premium_sum',
-                'workhouse__Ratio','porsantaj_ratio','hard_ratio','workhouse__ContractRow'  )
-    # print('@@@@@@@@@@@@@@@')
-    # print(type(mon_list),mon_list)
-    writer.writerow(mon)    
+                'workhouse__Ratio','porsantaj_ratio','hard_ratio','workhouse__ContractRow',  )
+
+    for m in mon:
+        writer.writerow(m)    
     return response
 
 
-    #this section is for .txt files
-
-    # text_file_content='salam'
-    # response = HttpResponse(text_content ,content_type='text/plain')
-    # return response
 
 def export_workers_data(request): 
 
@@ -129,12 +127,6 @@ def export_workers_data(request):
     workers_list=workers_list.annotate(insured_share=ExpressionWrapper(F('total_wage')*.07,output_field=BigIntegerField()  ))
     workers_list=workers_list.extra(select = {'porsantaj_ratio': 0})
     workers_list=workers_list.extra(select = {'list_number': 0})
-    # sex_chioce_dict={'1':'men','2':'women'}
-   
-    # workers_list=workers_list.annotate(jensiat=F('worker__Sex').get_Sex_display())
-    # workers_list=workers_list.filter(worker__Sex = '1').annotate(sex=Value('men', CharField()))
-    
-    # .get_Sex_display()
    
     workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
                         'month_list__month','list_number','worker__BimehNum','worker__FirstName','worker__LastName',
@@ -147,8 +139,16 @@ def export_workers_data(request):
     #TODO:advantage is daily or note
     #TODO : diffrence between monthly_wage_and_advantage and total_wage
 
+    sex_chioce_dict={'1':'مرد','2':'زن'}
+    job_chioce_dict={code:value for code,value in job_choice}
     for worker in workers:
-        worker
+        worker=list(worker)
+        #define sex describ instead of its code
+        worker[12]=sex_chioce_dict[worker[12]]
+
+        #define job describ instead of its code
+        worker[14]=job_chioce_dict[worker[14]]
+        
         writer.writerow(worker)    
     return response
 
