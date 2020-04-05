@@ -84,9 +84,9 @@ def export_workhouse_data(request):
     mon_list=mon_list.annotate(employer_share_sum=ExpressionWrapper(F('total_wage')*0.2,output_field=BigIntegerField()  ))
     mon_list=mon_list.annotate(insured_share_sum=ExpressionWrapper(F('total_wage')*0.07,output_field=BigIntegerField()  ))
     mon_list=mon_list.annotate(unemployment_premium_sum=ExpressionWrapper(F('total_wage')*0.03,output_field=BigIntegerField()  ))
-    mon_list=mon_list.annotate(list_number=Value('0', CharField()))
+    mon_list=mon_list.annotate(list_number=Value('01', CharField()))
     mon_list=mon_list.annotate(list_type=Value('0', CharField()))
-    mon_list=mon_list.annotate(list_description=Value('', CharField()))
+    mon_list=mon_list.annotate(list_description=Value('2', CharField()))
     mon_list=mon_list.annotate(porsantaj_ratio=Value('0', CharField()))
     mon_list=mon_list.annotate(hard_ratio=Value('0', CharField()))
 
@@ -125,29 +125,50 @@ def export_workers_data(request):
     workers_list=workers_list.annotate(monthly_wage_and_advantage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
     workers_list=workers_list.annotate(total_wage=(ExpressionWrapper( F('advantage') + (F('daily_wage') * F('working_days')), output_field=BigIntegerField()) )) 
     workers_list=workers_list.annotate(insured_share=ExpressionWrapper(F('total_wage')*.07,output_field=BigIntegerField()  ))
-    workers_list=workers_list.extra(select = {'porsantaj_ratio': 0})
-    workers_list=workers_list.extra(select = {'list_number': 0})
+    workers_list=workers_list.annotate(list_number=Value('01', CharField()))
+    workers_list=workers_list.annotate(porsantaj_ratio=Value('0', CharField()))
+    
+    # workers_list=workers_list.extra(select = {'porsantaj_ratio': 0})
+    # workers_list=workers_list.extra(select = {'list_number': '01'})
    
+    # workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
+    #                     'month_list__month','list_number','worker__BimehNum','worker__FirstName','worker__LastName',
+    #                     'worker__DadName','worker__IdNum','worker__IdPlace','worker__RegisterDate',
+    #                     'worker__BirthDate','worker__Sex','worker__Nationality','worker__Job',
+    #                     'start_date','end_date','working_days','daily_wage','monthly_wage',
+    #                     'advantage','monthly_wage_and_advantage','total_wage','insured_share','porsantaj_ratio',
+    #                     'worker__Job','worker__NationNum',)
+
+    #new stracture
     workers = workers_list.values_list('month_list__workhouse__Code','month_list__year',
                         'month_list__month','list_number','worker__BimehNum','worker__FirstName','worker__LastName',
                         'worker__DadName','worker__IdNum','worker__IdPlace','worker__RegisterDate',
-                        'worker__BirthDate','worker__Sex','worker__Nationality','worker__Job',
+                        'worker__Sex','worker__Nationality','worker__Job',
                         'start_date','end_date','working_days','daily_wage','monthly_wage',
                         'advantage','monthly_wage_and_advantage','total_wage','insured_share','porsantaj_ratio',
-                        'worker__Job','worker__NationNum',)
+                        'worker__Job','worker__BirthDate','worker__NationNum',)
+
 
     #TODO:advantage is daily or note
     #TODO : diffrence between monthly_wage_and_advantage and total_wage
 
     sex_chioce_dict={'1':'مرد','2':'زن'}
     job_chioce_dict={code:value for code,value in job_choice}
+    nat_chioce_dict={'1':'ایرانی','2':'غیر ایرانی'}
+    city_chioce_dict={code:value for code,value in city_choice}
     for worker in workers:
         worker=list(worker)
         #define sex describ instead of its code
-        worker[12]=sex_chioce_dict[worker[12]]
+        worker[11]=sex_chioce_dict[worker[11]]
 
         #define job describ instead of its code
-        worker[14]=job_chioce_dict[worker[14]]
+        worker[13]=job_chioce_dict[worker[13]]
+
+        #define nationality describ instead of its code
+        worker[12]=nat_chioce_dict[worker[12]]
+
+        #define city describ instead of its code
+        worker[9]=city_chioce_dict[worker[9]]
         
         writer.writerow(worker)    
     return response
@@ -211,11 +232,13 @@ def import_workers_data(request):
                 row[8]=c[0]
                 row[9]=c[0]
                 
-            row[10]=row[10].split('/')
-            row[10]=''.join(row[10])
+            # row[10]=row[10].split('/')
+            # row[10]=''.join(row[10])
+            row[10]=row[10][2:]
 
-            row[11]=row[11].split('/')
-            row[11]=''.join(row[11])
+            # row[11]=row[11].split('/')
+            # row[11]=''.join(row[11])
+            row[11]=row[11][2:]
             
             rows.append(row) 
 

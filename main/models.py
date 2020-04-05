@@ -139,8 +139,8 @@ class DetailsList(models.Model):
     working_days=models.SmallIntegerField('تعداد روز کارکرد')
     daily_wage=models.BigIntegerField('دستمزد روزانه')
     advantage=models.BigIntegerField('مزایای ماهانه')
-    start_date=models.CharField('تاریخ شروع به کار ' ,null=True, max_length=8 ,validators=[RegexValidator(r'^\d{1,10}$')])
-    end_date=models.CharField('تاریخ پایان به کار ',null=True,max_length=8,validators=[RegexValidator(r'^\d{1,10}$')])
+    start_date=models.CharField('تاریخ شروع به کار ' ,null=True, max_length=8 )
+    end_date=models.CharField('تاریخ پایان به کار ',null=True,max_length=8)
 
 
 
