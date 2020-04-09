@@ -1,3 +1,4 @@
+
 from django.shortcuts import render,get_object_or_404
 from main.models import WorkHouse,Workers,DetailsList,MonthList
 import csv
@@ -5,6 +6,7 @@ from django.http import HttpResponse
 from django.db.models import Count,Sum
 from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField,Value
 from main.choices import city_choice,job_choice
+import codecs
 
 def home(request):
     return render(request,"main/home.html")
@@ -65,6 +67,7 @@ def export_workhouse_data(request):
     response['Content-Disposition'] = 'attachment;  filename="kar_list.txt"'
 
     writer = csv.writer(response)
+    
     # writer.writerow(['workhouse__Code','workhouse__Name','workhouse__Address',
     #             'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
     #             'monthly_wage_and_advantage',])
@@ -104,6 +107,10 @@ def export_workhouse_data(request):
                 'workhouse__Ratio','porsantaj_ratio','hard_ratio','workhouse__ContractRow',  )
 
     for m in mon:
+        # m=list(m)
+        # m=[str(i) for i in m]
+        # m=','.join(m)
+        
         writer.writerow(m)    
     return response
 
@@ -158,6 +165,9 @@ def export_workers_data(request):
     city_chioce_dict={code:value for code,value in city_choice}
     for worker in workers:
         worker=list(worker)
+        #remove two zero at insuranse code
+        worker[4]=worker[4][2:]
+
         #define sex describ instead of its code
         worker[11]=sex_chioce_dict[worker[11]]
 

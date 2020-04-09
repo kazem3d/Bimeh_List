@@ -80,9 +80,9 @@ class Workers(models.Model):
 
     BirthPlace=models.CharField('محل تولد ',choices=city_choice,max_length=100)
 
-    RegisterDate=models.CharField('تاریخ صدور ',null=True,max_length=8,validators=[RegexValidator(r'^\d{1,10}$')])
+    RegisterDate=models.CharField('تاریخ صدور ',null=True,max_length=8)
 
-    BirthDate=models.CharField('تاریخ تولد ',null=True,max_length=8,validators=[RegexValidator(r'^\d{1,10}$')])
+    BirthDate=models.CharField('تاریخ تولد ',null=True,max_length=8)
 
 
 
