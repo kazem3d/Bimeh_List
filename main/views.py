@@ -7,6 +7,12 @@ from django.db.models import Count,Sum
 from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField,Value
 from main.choices import city_choice,job_choice
 import codecs
+from main import iransystem
+
+def reverse(s):
+    return s[::-1]
+
+codecs.register(lambda e: iransystem.getregentry())
 
 def home(request):
     return render(request,"main/home.html")
@@ -66,7 +72,12 @@ def export_workhouse_data(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment;  filename="kar_list.txt"'
 
-    writer = csv.writer(response)
+    # writer = csv.writer(response)
+
+
+
+
+
     
     # writer.writerow(['workhouse__Code','workhouse__Name','workhouse__Address',
     #             'year','month','worker_num','days_sum','daily_wage_sum','monthly_wage_sum','monthly_advantage',
@@ -106,12 +117,17 @@ def export_workhouse_data(request):
                 'monthly_wage_and_advantage','total_wage','insured_share_sum','employer_share_sum','unemployment_premium_sum',
                 'workhouse__Ratio','porsantaj_ratio','hard_ratio','workhouse__ContractRow',  )
 
-    for m in mon:
-        # m=list(m)
-        # m=[str(i) for i in m]
-        # m=','.join(m)
-        
-        writer.writerow(m)    
+    # for m in mon:
+   
+    #     writer.writerow(m)   
+
+    with open('t.txt', 'w', newline='', encoding='iransystem') as f:
+        writer = csv.writer(f)
+        for m in mon:
+   
+            writer.writerow(m)  
+    
+            
     return response
 
 
@@ -123,7 +139,7 @@ def export_workers_data(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment;  filename="work_list.txt"'
 
-    writer = csv.writer(response)
+    # writer = csv.writer(response)
     # writer.writerow(['header names list'])
     workers_list=DetailsList.objects.all()
 
@@ -163,25 +179,65 @@ def export_workers_data(request):
     job_chioce_dict={code:value for code,value in job_choice}
     nat_chioce_dict={'1':'ایرانی','2':'غیر ایرانی'}
     city_chioce_dict={code:value for code,value in city_choice}
-    for worker in workers:
-        worker=list(worker)
-        #remove two zero at insuranse code
-        worker[4]=worker[4][2:]
+    # for worker in workers:
+    #     worker=list(worker)
+    #     #remove two zero at insuranse code
+    #     worker[4]=worker[4][2:]
 
-        #define sex describ instead of its code
-        worker[11]=sex_chioce_dict[worker[11]]
+    #     #define sex describ instead of its code
+    #     worker[11]=sex_chioce_dict[worker[11]]
 
-        #define job describ instead of its code
-        worker[13]=job_chioce_dict[worker[13]]
+    #     #define job describ instead of its code
+    #     worker[13]=job_chioce_dict[worker[13]]
 
-        #define nationality describ instead of its code
-        worker[12]=nat_chioce_dict[worker[12]]
+    #     #define nationality describ instead of its code
+    #     worker[12]=nat_chioce_dict[worker[12]]
 
-        #define city describ instead of its code
-        worker[9]=city_chioce_dict[worker[9]]
+    #     #define city describ instead of its code
+    #     worker[9]=city_chioce_dict[worker[9]]
         
-        writer.writerow(worker)    
+    #     writer.writerow(worker)    
+    # return response
+
+    with open('w.txt', 'w', newline='', encoding='iransystem') as f:
+        writer = csv.writer(f)
+        for worker in workers:
+
+                
+
+            worker=list(worker)
+            
+  
+            #remove two zero at insuranse code
+            worker[4]=worker[4][2:]
+
+            #define sex describ instead of its code
+            worker[11]=sex_chioce_dict[worker[11]]
+
+            #define job describ instead of its code
+            worker[13]=job_chioce_dict[worker[13]]
+
+            #define nationality describ instead of its code
+            worker[12]=nat_chioce_dict[worker[12]]
+
+            #define city describ instead of its code
+            worker[9]=city_chioce_dict[worker[9]]
+
+            w=[]
+            
+            writer.writerow(worker)  
+
+
+            # for i in worker:
+            #     i=str(i)
+            #     # i=i.encode('utf-8')
+            #     # i=i.decode('iransystem')
+            #     w.append(i)
+            # worker=w
+            # writer.writerow(worker)  
     return response
+
+
 
 def import_workhouses_data(request):
     
