@@ -15,16 +15,32 @@
 <br>
 
 
+ 
+<br><br><br>
 {% if workers %}
-
+    <table style="width:100%"  id="t01">
+    <tr>
+        <th>نام</th>
+        <th>نام خانوادگی</th>
+        <th>نام پدر</th>
+        <th>شماره بیمه</th>
+    </tr>
+    
     {% for worker in workers %}
-        <ul>
-            <li>
-                {{worker}}
-            </li>
-        </ul>
-    {% endfor %}
+       
 
+        <a href='#'>
+            <tr>
+                <td>{{worker.LastName}}</td>
+                <td>{{worker.FirstName}}</td>
+                <td>{{worker.DadName}}</td>
+                <td>{{worker.BimehNum}}</td>
+            </tr>
+        </a>    
+ 
+        
+    {% endfor %}
+    </table> 
 {% else %}
 
 <h3>

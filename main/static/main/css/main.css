@@ -1,0 +1,35 @@
+html,body,h1,h2,h3,h4,h5,h6 {
+font-family: "Roboto", sans-serif;
+
+}
+
+.w3-sidebar {
+  z-index: 3;
+  width: 250px;
+  top: 43px;
+  bottom: 0;
+  height: inherit;
+}
+
+table, th, td {
+    direction: rtl;
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 15px;
+    text-align: center;
+    border-spacing: 5px;
+  }
+
+  table#t01 tr:nth-child(even) {
+    background-color: #eee;
+  }
+  table#t01 tr:nth-child(odd) {
+    background-color: #fff;
+  }
+  table#t01 th {
+    color: white;
+    background-color: black;
+  }
+
+  tr.clickable-row {
+     cursor: pointer; } 

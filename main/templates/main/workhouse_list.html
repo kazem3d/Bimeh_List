@@ -15,14 +15,31 @@
 <br>
 
 {% if workhouses %}
+    <table class="table table-hover" style="width:100%"  >
+    <tr class="bg-primary">
+        <th> نام کارگاه</th>
+        <th>کد کارگاه</th>
+        <th>ردیف کارگاه</th>
+        <th>نام کارفرما</th>
+        <th>آدرس کارگاه</th>
 
+    </tr>
     {% for workhouse in workhouses %}
-        <ul>
-            <li>
-                {{workhouse}}
-            </li>
-        </ul>
+        
+        
+            <tr>
+                <td>{{workhouse.Name}}</td>
+                <td>{{workhouse.Code}}</td>
+                <td>{{workhouse.ContractRow}}</td>
+                <td>{{workhouse.Client}}</td>
+                <td>{{workhouse.Address}}</td>
+
+                
+            </tr>
+           
+
     {% endfor %}
+    </table>
 
 {% else %}
 

@@ -15,16 +15,42 @@
 
 
 {% if months_list %}
+    <table style="width:100%"  class="table table-hover">
+    <tr>
+        <th> نام کارگاه</th>
+        <th>کد کارگاه</th>
+        <th>ردیف کارگاه</th>
+        <th> سال</th>
+        <th> ماه</th>
+
+    </tr>
 
     {% for month_list in months_list %}
-        <ul> 
+        {% comment %} <ul> 
             <a href={% url 'main:details_list' list_id=month_list.id %} >
             <li>
                 {{month_list}}
             </li>
             </a>
-        </ul>
+        </ul> {% endcomment %}
+
+     
+            <tr class='clickable-row' data-href={% url 'main:details_list' list_id=month_list.id %}>
+                <td>{{month_list.workhouse.Name}}</td>
+
+                <td>{{month_list.workhouse.Code}}</td>
+                <td>{{month_list.workhouse.ContractRow}}</td>
+                <td>{{month_list.year}}</td>
+                <td>{{month_list.month}}</td>
+
+                
+            </tr>
+        
+
+
+
     {% endfor %}
+    </table>
 
 {% else %}
 
