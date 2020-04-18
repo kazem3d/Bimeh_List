@@ -1,5 +1,5 @@
 {% extends 'main/_base.html' %}
-
+{% load humanize %}
 {% block title %}
 
 جزئیات لیست
@@ -13,22 +13,46 @@
 <br>
 <a href='http://127.0.0.1:8000/admin/main/detailslist/add/' >  ثبت  جدید </a>
 <br>
-<a href={% url 'main:export_workhouse_data' %} >  دریافت اطلاعات  کارگاه </a>
+<a href={% url 'main:export_workhouse_data' %} >  صدور اطلاعات  کارگاه </a>
 <br>
-<a href={% url 'main:export_workers_data' %} >  دریافت اطلاعات بیمه شدگان </a>
+<a href={% url 'main:export_workers_data' %} >  صدور اطلاعات بیمه شدگان </a>
 <br>
 
 {% if records %}
 
+    <table class="table table-hover" style="width:100%"  >
+    <tr class="text-light bg-dark">
+        <th>نام</th>
+        <th>نام خانوادگی</th>
+        <th>نام پدر</th>
+        <th>شماره بیمه</th>
+        <th>تعداد روز کارکرد</th>
+        <th>دستمزد روزانه</th>
+        <th>مزایای ماهانه</th>
+        <th>شغل</th>
+
+
+    </tr>
+
     {% for record in records %}
-        <ul> 
-            <a href='#' >
-            <li>
-                {{record}}
-            </li>
-            </a>
-        </ul>
+            <tr >
+                <td>{{record.worker.FirstName}}</td>
+
+                <td>{{record.worker.LastName}}</td>
+                <td>{{record.worker.DadName}}</td>
+                <td>{{record.worker.BimehNum}}</td>
+                <td>{{record.working_days}}</td>
+                <td>{{record.daily_wage | intcomma:False }}</td>
+                <td>{{record.advantage | intcomma:False }}</td>
+                <td>{{record.worker.get_Job_display}}</td>
+
+                
+            </tr>
+
+
     {% endfor %}
+
+    </table>
 
 {% else %}
 
