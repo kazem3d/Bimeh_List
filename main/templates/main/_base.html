@@ -56,7 +56,13 @@
 {% load static %}
 
 <html lang="en">
-<title>W3.CSS Template</title>
+<title>
+  {% block title %}
+            
+        
+
+  {% endblock %}
+</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -64,35 +70,78 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
 <link rel="stylesheet" type="text/css" href="{% static "main/css/main.css" %}">
 
 <body>
 
-<!-- Navbar -->
-<div class="w3-top" >
-  <div class="w3-bar w3-theme w3-top w3-left-align w3-large" >
-    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-theme-l1">Logo</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">About</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Values</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-hover-white">Partners</a>
-  </div>
-</div>
 
-<!-- Sidebar -->
-<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
-  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
-    <i class="fa fa-remove"></i>
-  </a>
-  <h4 class="w3-bar-item"><b>Menu</b></h4>
-  <a class="w3-bar-item w3-button w3-hover-black" href='/' >صفحه اصلی  </a>
-  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:import_workers_data' %} > وارد کردن اطلاعات  کارکنان </a>
-  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:import_workhouses_data' %} > وارد کردن اطلاعات کارگاه  </a>
-  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:workers_list' %} > لیست کارکنان </a>
-  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:workhouses_list' %} >  لیست گارگاهها </a>
-  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:month_list' %} >   لیست بیمه ماهانه </a>
+
+
+
+<!-- Navbar -->
+
+<nav class="navbar fixed-top navbar-DARK bg-dark">
+  <a class="navbar-brand" href='/'>سامانه تنظیم لیست بیمه</a>
+
+  <div class="btn-group">
+    <a class="btn btn-secondary dropdown-toggle " href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      اطلاعات پایه
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style=' margin:-12px'>
+      <a class="dropdown-item" href={% url 'main:workhouses_list' %}>مشخصات کارگاه</a>
+      <a class="dropdown-item" href={% url 'main:workers_list' %}>مشخصات کارکنان</a>
+      
+    </div>
+ 
+
+  <div class="btn-group">
+    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      عملیات
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style=' margin:-12px'>
+      <a class="dropdown-item" href={% url 'main:month_list' %}>لیست ماهانه </a>
+
+    </div>
+  </div>  
+
+  <div class="btn-group">
+    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      پشتیبانی
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style=' margin:-12px'>
+      <a class="dropdown-item" href={% url 'main:import_workhouses_data' %}> وارد کردن اطلاعات کارگاه </a>
+      <a class="dropdown-item" href={% url 'main:import_workers_data' %}> وارد کردن اطلاعات کارکنان </a>
+
+    </div>
+  </div>  
+
+
 
 </nav>
+
+
+
+<!-- Sidebar -->
+{% block sidebar %}
+  <nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+    <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+      <i class="fa fa-remove"></i>
+    </a>
+    <h4 class="w3-bar-item"><b>منو</b></h4>
+    <a class="w3-bar-item w3-button w3-hover-black" href='/' >صفحه اصلی  </a>
+
+  
+{% endblock %}
+</nav>
+
+
+
+
+
 
 <!-- Overlay effect when opening sidebar on small screens -->
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
@@ -102,9 +151,17 @@
 
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
-      <h1 class="w3-text-teal">Heading</h1>
-        <p> salam</p>
+      <h1 class="w3-text-teal">
+      
+            {% block pagetitle %}
+            
+            
+
+            {% endblock %}</h1>
+        
             {% block mainContent %}
+            
+        
 
             {% endblock %}
     </div>
@@ -115,11 +172,92 @@
   </div>
 
 
+<!-- Footer -->
+<footer class="page-footer font-small bg-dark text-warning pt-4">
 
- 
+  <!-- Footer Links -->
+  <div class="container-fluid text-center text-md-left">
+
+    <!-- Grid row -->
+    <div class="row">
+
+      <!-- Grid column -->
+      <div class="col-md-6 mt-md-0 mt-3">
+
+        <!-- Content -->
+        <h5 class="text-uppercase">Footer Content</h5>
+        <p>Here you can use rows and columns to organize your footer content.</p>
+
+      </div>
+      <!-- Grid column -->
+
+      <hr class="clearfix w-100 d-md-none pb-3">
+
+      <!-- Grid column -->
+      <div class="col-md-3 mb-md-0 mb-3">
+
+        <!-- Links -->
+        <h5 class="text-uppercase">Links</h5>
+
+        <ul class="list-unstyled">
+          <li>
+            <a href="#!">Link 1</a>
+          </li>
+          <li>
+            <a href="#!">Link 2</a>
+          </li>
+          <li>
+            <a href="#!">Link 3</a>
+          </li>
+          <li>
+            <a href="#!">Link 4</a>
+          </li>
+        </ul>
+
+      </div>
+      <!-- Grid column -->
+
+      <!-- Grid column -->
+      <div class="col-md-3 mb-md-0 mb-3">
+
+        <!-- Links -->
+        <h5 class="text-uppercase">Links</h5>
+
+        <ul class="list-unstyled">
+          <li>
+            <a href="#!">Link 1</a>
+          </li>
+          <li>
+            <a href="#!">Link 2</a>
+          </li>
+          <li>
+            <a href="#!">Link 3</a>
+          </li>
+          <li>
+            <a href="#!">Link 4</a>
+          </li>
+        </ul>
+
+      </div>
+      <!-- Grid column -->
+
+    </div>
+    <!-- Grid row -->
+
+  </div>
+  <!-- Footer Links -->
+
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3">© 2020 Copyright:
+    <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+  </div>
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
 
 
-  <footer id="myFooter">
+  {% comment %} <footer id="myFooter">
     <div class="w3-container w3-theme-l2 w3-padding-32">
       <h4>Footer</h4>
     </div>
@@ -127,7 +265,7 @@
     <div class="w3-container w3-theme-l1">
       <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
     </div>
-  </footer>
+  </footer> {% endcomment %}
 
 <!-- END MAIN -->
 </div>

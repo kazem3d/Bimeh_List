@@ -6,17 +6,27 @@
 
 {% endblock %}
 
+{% block sidebar %}
+{{ block.super }}
+  <a class="w3-bar-item w3-button w3-hover-black" href='http://127.0.0.1:8000/admin/main/detailslist/add/' > ثبت  جدید </a>
+  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:export_workhouse_data' %} >  صدور اطلاعات  کارگاه </a>
+  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:export_workers_data' %} >  صدور اطلاعات بیمه شدگان </a>
+  
+
+{% endblock %}
+
+
+{% block pagetitle %}
+            
+    ریز کارکرد
+
+{% endblock %}
+
 {% block mainContent %}
 
 
-<h3>ریز کارکرد</h3>
-<br>
-<a href='http://127.0.0.1:8000/admin/main/detailslist/add/' >  ثبت  جدید </a>
-<br>
-<a href={% url 'main:export_workhouse_data' %} >  صدور اطلاعات  کارگاه </a>
-<br>
-<a href={% url 'main:export_workers_data' %} >  صدور اطلاعات بیمه شدگان </a>
-<br>
+
+
 
 {% if records %}
 

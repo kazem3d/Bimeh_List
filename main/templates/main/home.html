@@ -6,25 +6,20 @@
 
 {% endblock %}
 
+
+{% block sidebar %}
+
+{% endblock %}
+
+{% block pagetitle %}
+            
+   صفحه اصلی
+
+{% endblock %}
+
 {% block mainContent %}
 
-<h1> صفحه اصلی</h1> 
-<br>
-<br>
-<br>
-<br>
-<a href={% url 'main:import_workers_data' %} > وارد کردن اطلاعات  کارکنان </a>
-<br>
-<br>
-<a href={% url 'main:import_workhouses_data' %} > وارد کردن اطلاعات کارگاه  </a>
-<br>
-<br>
-<a href={% url 'main:workers_list' %} > لیست کارکنان </a>
-<br>
-<br>
-<a href={% url 'main:workhouses_list' %} >  لیست گارگاهها </a>
-<br>
-<br>
-<a href={% url 'main:month_list' %} >   لیست بیمه ماهانه </a>
+
+
 
 {% endblock %}

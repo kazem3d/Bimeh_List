@@ -7,16 +7,25 @@
 {% endblock %}
 
 
+{% block sidebar %}
+{{ block.super }}
+  <a class="w3-bar-item w3-button w3-hover-black" href='http://127.0.0.1:8000/admin/main/workhouse/add/' >ثبت کارگاه جدید  </a>
+
+
+{% endblock %}
+
+{% block pagetitle %}
+            
+ لیست  کارگاه ها  
+
+{% endblock %}
+
 {% block mainContent %}
 
-<h3>لیست  کارگاه ها</h3>
-<br>
-<a href='http://127.0.0.1:8000/admin/main/workhouse/add/' >  ثبت کارگاه  </a>
-<br>
 
 {% if workhouses %}
     <table class="table table-hover" style="width:100%"  >
-    <tr class="bg-primary">
+    <tr class="text-light bg-dark">
         <th> نام کارگاه</th>
         <th>کد کارگاه</th>
         <th>ردیف کارگاه</th>

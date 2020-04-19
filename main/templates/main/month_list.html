@@ -6,17 +6,26 @@
 
 {% endblock %}
 
-{% block mainContent %}
+{% block sidebar %}
+{{ block.super }}
+  <a class="w3-bar-item w3-button w3-hover-black" href='http://127.0.0.1:8000/admin/main/monthlist/add/' > ثبت لیست جدید </a>
 
-<h3>لیست های بیمه</h3>
-<br>
-<a href='http://127.0.0.1:8000/admin/main/monthlist/add/' >  ثبت لیست جدید </a>
-<br>
+
+{% endblock %}
+
+{% block pagetitle %}
+            
+    لیست ماهانه  
+
+{% endblock %}
+
+
+{% block mainContent %}
 
 
 {% if months_list %}
     <table style="width:100%"  class="table table-hover">
-    <tr>
+    <tr  class="text-light bg-dark">
         <th> نام کارگاه</th>
         <th>کد کارگاه</th>
         <th>ردیف کارگاه</th>
