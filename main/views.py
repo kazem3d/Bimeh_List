@@ -1,8 +1,10 @@
 
 from django.shortcuts import render,get_object_or_404
 from main.models import WorkHouse,Workers,DetailsList,MonthList
+
 import csv
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
+from django.urls import reverse
 from django.db.models import Count,Sum
 from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField,Value
 from main.choices import city_choice,job_choice
@@ -323,20 +325,40 @@ def import_workers_data(request):
 
 
 def workhouse_reg(request):
-    workhouse_form=WorkhouseForm()
+    if request.method== 'POST':
 
-    context={
-        'workhouse_form':workhouse_form
-    }
+        workhouse_form=WorkhouseForm(request.POST)
+        if workhouse_form.is_valid():
+            workhouse_form.save()
+            return  HttpResponseRedirect('/main/workhouses_list/')
+            # return HttpResponseRedirect(reverse('main:workhouses_list'))
+        else:
+            return HttpResponse('not valid')
+    else:        
+        workhouse_form=WorkhouseForm()
+        context={
+            'workhouse_form':workhouse_form
+        }
 
     return render(request,'main/workhouse_reg.html',context)
-
+   
+   
 def workers_reg(request):
-    workers_form=WorkersForm()
+    if request.method== 'POST':
+        workers_form=WorkersForm(request.POST)
+        if workers_form.is_valid():
+            workers_form.save()
+            return  HttpResponseRedirect('/main/workers_list/')
+        else:
+            return HttpResponse('not valid')
+    else:        
+    
 
-    context={
-        'workers_form':workers_form
-    }
+        workers_form=WorkersForm()
+
+        context={
+            'workers_form':workers_form
+        }
 
     return render(request,'main/workers_reg.html',context)
 

@@ -18,7 +18,11 @@
 
 {% block mainContent %}
 
+<form action='' method='POST'>
+{% csrf_token %}
+{{workhouse_form.as_p}}
 
-{{workhouse_form}}
 
+<button type="submit" class="btn btn-success">ثبت</button>
+</form>
 {% endblock %}

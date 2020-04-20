@@ -18,7 +18,9 @@
 
 {% block mainContent %}
 
-
-{{workers_form}}
-
+<form action='' method='POST'>
+{% csrf_token %}
+{{workers_form.as_p}}
+<button type="submit" class="btn btn-success">ثبت</button>
+</form>
 {% endblock %}
