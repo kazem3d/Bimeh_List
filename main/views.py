@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.db.models import Count,Sum
 from django.db.models import F,BigIntegerField,ExpressionWrapper,CharField,Value
 from main.choices import city_choice,job_choice
+from main.forms import WorkhouseForm,WorkersForm,MonthlistForm,DetailsForm
 import codecs
 from main import iransystem
 
@@ -319,3 +320,41 @@ def import_workers_data(request):
         #TODO IdPlace=,BirthPlace=, most some consultations and BirthDate=,RegisterDate=
 
     return HttpResponse('done')
+
+
+def workhouse_reg(request):
+    workhouse_form=WorkhouseForm()
+
+    context={
+        'workhouse_form':workhouse_form
+    }
+
+    return render(request,'main/workhouse_reg.html',context)
+
+def workers_reg(request):
+    workers_form=WorkersForm()
+
+    context={
+        'workers_form':workers_form
+    }
+
+    return render(request,'main/workers_reg.html',context)
+
+def list_reg(request):
+    monthlist_form=MonthlistForm()
+
+    context={
+        'monthlist_form':monthlist_form
+        }
+
+    return render(request,'main/monthlist_form.html',context)
+
+
+def details_reg(request):
+    details_form=DetailsForm()
+
+    context={
+        'details_form':details_form
+        }
+
+    return render(request,'main/details_form.html',context)

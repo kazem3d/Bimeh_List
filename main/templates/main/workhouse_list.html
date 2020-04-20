@@ -9,8 +9,7 @@
 
 {% block sidebar %}
 {{ block.super }}
-  <a class="w3-bar-item w3-button w3-hover-black" href='http://127.0.0.1:8000/admin/main/workhouse/add/' >ثبت کارگاه جدید  </a>
-
+  <a class="w3-bar-item w3-button w3-hover-black" href={% url 'main:workhouse_reg' %} >ثبت کارگاه جدید  </a>
 
 {% endblock %}
 
